@@ -9,3 +9,7 @@ wheels/
 # Virtual environments
 .venv
 .env
+
+# file per Test connessione
+
+connection_test.py
