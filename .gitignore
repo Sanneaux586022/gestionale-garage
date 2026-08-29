@@ -13,3 +13,6 @@ wheels/
 # file per Test connessione
 
 connection_test.py
+
+# File test per le tabelle da creare
+preview_ddl.py
