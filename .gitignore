@@ -16,3 +16,4 @@ connection_test.py
 
 # File test per le tabelle da creare
 preview_ddl.py
+test_inserimentodb.py
