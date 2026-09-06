@@ -1,5 +1,5 @@
 from models.auto import Auto
-from models.cliente import Cliente
+from models.cliente_model import Cliente
 from models.fattura import Fattura
 from models.intervento import Intervento
 from models.intervento_ricambio import InterventoRicambio

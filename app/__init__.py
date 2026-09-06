@@ -1,10 +1,15 @@
-from flask import Flask
-from routes.cliente import cliente_bp
+import logging
 
+from flask import Flask
+
+from app.routes.cliente_route import cliente_bp
 from database import close_db_session
 
 
 def create_app():
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s [%(levelname)s %(name)s : %(message)s]"
+    )
 
     app = Flask(__name__)
 
