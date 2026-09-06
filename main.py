@@ -1,6 +1,7 @@
-def main():
-    print("Hello from gestionale-garage!")
+from app import create_app
+
+app = create_app()
 
 
 if __name__ == "__main__":
-    main()
+    app.run(host="127.0.0.1", debug=True)
