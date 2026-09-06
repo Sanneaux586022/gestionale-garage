@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.service_base import ServiceBase
 from app.exceptions import NotFoundResultError
@@ -19,7 +20,7 @@ class ClienteService(ServiceBase):
             self.session.add(nuovo_cliente)
             self.session.commit()
             return nuovo_cliente
-        except Exception as err:
+        except SQLAlchemyError as err:
             self.session.rollback()
             self.logger.error(f"Errore : {err}")
             raise
