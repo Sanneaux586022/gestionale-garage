@@ -54,3 +54,4 @@ def get_cliente(id_cliente: int) -> dict:
     except Exception as err:
         logger.error(f"errore: {err}")
         return jsonify({"errore": "Errore durante l'operazione"}), 500
+

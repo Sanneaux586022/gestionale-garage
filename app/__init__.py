@@ -3,7 +3,7 @@ import logging
 from flask import Flask
 
 from app.routes.cliente_route import cliente_bp
-from database import close_db_session
+from database import close_db_session, migrate, Base
 
 
 def create_app():
@@ -12,7 +12,7 @@ def create_app():
     )
 
     app = Flask(__name__)
-
+    migrate.init_app(app, Base.metadata)
     app.teardown_appcontext(close_db_session)
     app.register_blueprint(cliente_bp)
 

@@ -1,4 +1,5 @@
 from flask import g
+from flask_migrate import Migrate
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
@@ -24,3 +25,6 @@ def close_db_session(exception=None):
     db_session = g.pop("db_session", None)
     if db_session is not None:
         db_session.close()
+
+
+migrate = Migrate()
