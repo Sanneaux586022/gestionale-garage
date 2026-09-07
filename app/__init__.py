@@ -3,7 +3,7 @@ import logging
 from flask import Flask
 
 from app.routes.cliente_route import cliente_bp
-from database import close_db_session, migrate, Base
+from database import Base, close_db_session, migrate
 
 
 def create_app():
