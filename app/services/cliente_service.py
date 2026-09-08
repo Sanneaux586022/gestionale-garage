@@ -8,7 +8,7 @@ from models.cliente_model import Cliente
 
 class ClienteService(ServiceBase):
 
-    def aggiungi_cliente(self, dati_cliente: dict) -> int:
+    def aggiungi_cliente(self, dati_cliente: dict) -> Cliente:
 
         try:
             nuovo_cliente = Cliente(
@@ -34,3 +34,18 @@ class ClienteService(ServiceBase):
             raise NotFoundResultError(f"Nessun utente trovato con l'id: {id_cliente}")
 
         return result
+
+    def modifica_cliente(self, id_cliente: int, dati_cliente: dict) -> Cliente:
+
+        cliente_da_modificare = self.cerca_cliente_by_id(id_cliente)
+
+        try:
+            for chiave, valore in dati_cliente.items():
+                setattr(cliente_da_modificare, chiave, valore)
+
+            self.session.commit()
+            return cliente_da_modificare
+        except SQLAlchemyError as err:
+            self.session.rollback()
+            self.logger.error(f"errore: {err}")
+            raise
