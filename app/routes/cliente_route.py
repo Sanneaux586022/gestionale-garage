@@ -4,8 +4,10 @@ from flask import Blueprint, jsonify, request
 from marshmallow import ValidationError
 
 from app.exceptions import NotFoundResultError
+from app.services.auto_service import AutoService
 from app.services.cliente_service import ClienteService
 from database import get_db_session
+from schemas.auto_schema import AutoSchema
 from schemas.cliente_schema import ClienteSchema
 
 cliente_bp = Blueprint("cliente", __name__)
@@ -20,8 +22,8 @@ def add_cliente() -> dict:
     cliente_service = ClienteService(db_session, logger)
     try:
         data = schema.load(request.get_json())
-    except ValidationError as err:
-        logger.error(f"errore nei dati dal client: {err}")
+    except ValidationError as val_err:
+        logger.error(f"errore nei dati dal client: {val_err}")
         return jsonify({"errore": "Dati inseriti non corretti."}), 400
 
     try:
@@ -66,8 +68,8 @@ def modify_cliente(id_cliente):
 
     try:
         data = schema.load(request.get_json())
-    except ValidationError as err:
-        logger.error(f"errore nei dati dal client: {err}")
+    except ValidationError as val_err:
+        logger.error(f"errore nei dati dal client: {val_err}")
         return jsonify({"errore": "Dati inseriti non corretti."}), 400
 
     try:
@@ -79,3 +81,30 @@ def modify_cliente(id_cliente):
     except Exception as err:
         logger.error(f"errore: {err}")
         return jsonify({"errore": "Errore durante l'operazione di modifica"}), 500
+
+
+@cliente_bp.route("/cliente/<int:id_cliente>/auto", methods=["POST"])
+def aggiungi_auto_a_cliente(id_cliente):
+    db_session = get_db_session()
+    schema = AutoSchema()
+    client_service = ClienteService(db_session, logger)
+    auto_service = AutoService(db_session, logger)
+
+    try:
+        data = schema.load(request.get_json())
+    except ValidationError as val_err:
+        logger.error(f"errore nei dati dal client: {val_err}")
+        return jsonify({"errore": "Dati inseriti non corretti."}), 400
+
+    try:
+        cliente = client_service.cerca_cliente_by_id(id_cliente)
+        auto = auto_service.aggiungi_nuova_auto(cliente.id, data)
+
+        return jsonify({"response_data": schema.dump(auto)}), 201
+
+    except NotFoundResultError as nfre:
+        logger.warning(f"Warning: {nfre.message}")
+        return jsonify({"errore": nfre.message}), nfre.status_code
+    except Exception as err:
+        logger.error(f"errore: {err}")
+        return jsonify({"errore": "Errore durante l'operazione"}), 500

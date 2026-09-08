@@ -11,12 +11,11 @@ class ClienteService(ServiceBase):
     def aggiungi_cliente(self, dati_cliente: dict) -> Cliente:
 
         try:
-            nuovo_cliente = Cliente(
-                nome=dati_cliente["nome"],
-                cognome=dati_cliente["cognome"],
-                telefono=dati_cliente["telefono"],
-                email=dati_cliente.get("email"),
-            )
+            nuovo_cliente = Cliente()
+
+            for chiave, valore in dati_cliente.items():
+                setattr(nuovo_cliente, chiave, valore)
+
             self.session.add(nuovo_cliente)
             self.session.commit()
             return nuovo_cliente
@@ -49,3 +48,6 @@ class ClienteService(ServiceBase):
             self.session.rollback()
             self.logger.error(f"errore: {err}")
             raise
+
+    def elimina_cliente(self, id_cliente: int):
+        pass
