@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.service_base import ServiceBase
 from app.exceptions import NotFoundResultError
-from models.auto import Auto
+from models.auto_model import Auto
 from models.storico_proprieta_auto_model import StoricoProprietaAuto
 
 

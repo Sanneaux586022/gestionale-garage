@@ -1,4 +1,4 @@
-from models.auto import Auto
+from models.auto_model import Auto
 from models.cliente_model import Cliente
 from models.fattura import Fattura
 from models.intervento import Intervento
