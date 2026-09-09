@@ -23,7 +23,7 @@ def add_cliente() -> dict:
     try:
         data = schema.load(request.get_json())
     except ValidationError as val_err:
-        logger.error(f"errore nei dati dal client: {val_err}")
+        logger.error(f"errore nei dati dal client: {val_err}.")
         return jsonify({"errore": "Dati inseriti non corretti."}), 400
 
     try:
@@ -31,7 +31,7 @@ def add_cliente() -> dict:
         return (
             jsonify(
                 {
-                    "message": f"utente {nuovo_cliente.nome}, con id {nuovo_cliente.id} correttamente generato"
+                    "message": f"utente {nuovo_cliente.nome}, con id {nuovo_cliente.id} correttamente generato."
                 }
             ),
             201,
@@ -39,7 +39,7 @@ def add_cliente() -> dict:
 
     except Exception as err:
         logger.error(f"Errore: {err}")
-        return jsonify({"errore": "Errore durante l'operazione"}), 500
+        return jsonify({"errore": "Errore durante l'operazione."}), 500
 
 
 @cliente_bp.route("/cliente/<int:id_cliente>", methods=["GET"])
@@ -57,7 +57,7 @@ def get_cliente(id_cliente: int) -> dict:
         return jsonify({"errore": nfre.message}), nfre.status_code
     except Exception as err:
         logger.error(f"errore: {err}")
-        return jsonify({"errore": "Errore durante l'operazione"}), 500
+        return jsonify({"errore": "Errore durante l'operazione."}), 500
 
 
 @cliente_bp.route("/cliente/<int:id_cliente>", methods=["PUT"])
@@ -69,7 +69,7 @@ def modify_cliente(id_cliente):
     try:
         data = schema.load(request.get_json())
     except ValidationError as val_err:
-        logger.error(f"errore nei dati dal client: {val_err}")
+        logger.error(f"errore nei dati dal client: {val_err}.")
         return jsonify({"errore": "Dati inseriti non corretti."}), 400
 
     try:
@@ -80,7 +80,7 @@ def modify_cliente(id_cliente):
         return jsonify({"errore": nfre.message}), nfre.status_code
     except Exception as err:
         logger.error(f"errore: {err}")
-        return jsonify({"errore": "Errore durante l'operazione di modifica"}), 500
+        return jsonify({"errore": "Errore durante l'operazione di modifica."}), 500
 
 
 @cliente_bp.route("/cliente/<int:id_cliente>/auto", methods=["POST"])
@@ -93,7 +93,7 @@ def aggiungi_auto_a_cliente(id_cliente):
     try:
         data = schema.load(request.get_json())
     except ValidationError as val_err:
-        logger.error(f"errore nei dati dal client: {val_err}")
+        logger.error(f"errore nei dati dal client: {val_err}.")
         return jsonify({"errore": "Dati inseriti non corretti."}), 400
 
     try:
@@ -106,5 +106,5 @@ def aggiungi_auto_a_cliente(id_cliente):
         logger.warning(f"Warning: {nfre.message}")
         return jsonify({"errore": nfre.message}), nfre.status_code
     except Exception as err:
-        logger.error(f"errore: {err}")
-        return jsonify({"errore": "Errore durante l'operazione"}), 500
+        logger.error(f"errore: {err}.")
+        return jsonify({"errore": "Errore durante l'operazione."}), 500

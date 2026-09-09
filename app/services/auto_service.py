@@ -1,6 +1,8 @@
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.service_base import ServiceBase
+from app.exceptions import NotFoundResultError
 from models.auto import Auto
 from models.storico_proprieta_auto_model import StoricoProprietaAuto
 
@@ -30,3 +32,14 @@ class AutoService(ServiceBase):
             self.session.rollback()
             self.logger.error(f"Errore : {err}")
             raise
+
+    def cerca_auto_by_id(self, id_auto: int) -> Auto:
+
+        query = select(Auto).where(Auto.id == id_auto)
+
+        result = self.session.scalar(query)
+
+        if not result:
+            raise NotFoundResultError(f"Nessuna macchina trovata con l'id {id_auto}.")
+
+        return result

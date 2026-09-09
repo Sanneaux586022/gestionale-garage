@@ -30,7 +30,7 @@ class ClienteService(ServiceBase):
         result = self.session.scalar(query)
 
         if not result:
-            raise NotFoundResultError(f"Nessun utente trovato con l'id: {id_cliente}")
+            raise NotFoundResultError(f"Nessun utente trovato con l'id: {id_cliente}.")
 
         return result
 
