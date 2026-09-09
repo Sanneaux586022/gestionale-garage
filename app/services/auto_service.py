@@ -40,6 +40,33 @@ class AutoService(ServiceBase):
         result = self.session.scalar(query)
 
         if not result:
-            raise NotFoundResultError(f"Nessuna macchina trovata con l'id {id_auto}.")
+            raise NotFoundResultError(f"Nessuna auto trovata con l'id {id_auto}.")
 
         return result
+
+    def cerca_auto_by_targa(self, targa: str) -> Auto:
+
+        query = select(Auto).where(Auto.targa == targa)
+        result = self.session.scalar(query)
+
+        if not result:
+            raise NotFoundResultError(f"Nessuna auto trovata con la targa: {targa}")
+
+        return result
+
+    def modifica_dati_auto(self, id_auto: int, dati_auto: dict) -> Auto:
+
+        auto_da_modificare = self.cerca_auto_by_id(id_auto)
+
+        try:
+
+            for chiave, valore in dati_auto.items():
+                setattr(auto_da_modificare, chiave, valore)
+
+            self.session.commit()
+
+            return auto_da_modificare
+        except SQLAlchemyError as err:
+            self.session.rollback()
+            self.logger.error(f"errore: {err}")
+            raise
