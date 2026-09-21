@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.service_base import ServiceBase
 from app.exceptions import NotFoundResultError
-from models.cliente_model import Cliente
+from models import Cliente
 
 
 class ClienteService(ServiceBase):

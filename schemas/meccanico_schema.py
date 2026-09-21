@@ -1,15 +1,13 @@
 from marshmallow import Schema, ValidationError, fields, post_load, validates
 
 
-class ClienteSchema(Schema):
+class MeccanicoSchema(Schema):
     id = fields.Int(dump_only=True)
     nome = fields.Str(required=True)
-    cognome = fields.Str(
-        required=True,
-    )
+    cognome = fields.Str(required=True)
+    specializzazione = fields.Str()
+    data_assunzione = fields.Date(dump_only=True)
     telefono = fields.Str(required=True)
-    email = fields.Email()
-    data_registrazione = fields.Date(dump_only=True)
 
     @validates("telefono")
     def valida_telefono(self, value, **kwargs):
@@ -27,3 +25,7 @@ class ClienteSchema(Schema):
         data["cognome"] = cognome.lower()
 
         return data
+
+
+class CancelMeccanicoSchema(Schema):
+    data_fine_rapporto = fields.Date(required=True)
