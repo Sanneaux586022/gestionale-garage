@@ -30,5 +30,6 @@ class MeccanicoSchema(Schema):
 class CancelMeccanicoSchema(Schema):
     data_fine_rapporto = fields.Date(required=True)
 
+
 class MeccanicoSchemaResponse(MeccanicoSchema):
     data_fine_rapporto = fields.Date(dump_only=True)
