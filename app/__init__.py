@@ -4,6 +4,7 @@ from flask import Flask
 
 from app.routes.auto_route import auto_blp
 from app.routes.cliente_route import cliente_bp
+from app.routes.meccanico_route import meccanico_blp
 from database import Base, close_db_session, migrate
 
 
@@ -17,5 +18,6 @@ def create_app():
     app.teardown_appcontext(close_db_session)
     app.register_blueprint(cliente_bp)
     app.register_blueprint(auto_blp)
+    app.register_blueprint(meccanico_blp)
 
     return app

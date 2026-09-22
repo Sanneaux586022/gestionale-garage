@@ -1,8 +1,9 @@
-from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
+
 from app.core.service_base import ServiceBase
+from app.exceptions import NotFoundResultError
 from models import Meccanico
-from exceptions import NotFoundResultError
 
 
 class MeccanicoService(ServiceBase):
@@ -22,17 +23,19 @@ class MeccanicoService(ServiceBase):
             self.logger.error(f"Errore : {err}.")
             raise
 
-    def cerca_meccanico_by_id(self, id_meccanico: int)-> Meccanico:
+    def cerca_meccanico_by_id(self, id_meccanico: int) -> Meccanico:
         query = select(Meccanico).where(Meccanico.id == id_meccanico)
 
         result = self.session.scalar(query)
 
         if not result:
-            raise NotFoundResultError(f"Nessun Meccanico trovato con l'id: {id_meccanico}.")
+            raise NotFoundResultError(
+                f"Nessun Meccanico trovato con l'id: {id_meccanico}."
+            )
 
         return result
 
-    def termina_rapporto(self, id_meccanico: int, data: dict)-> dict:
+    def termina_rapporto(self, id_meccanico: int, data: dict) -> dict:
 
         try:
             meccanico = self.cerca_meccanico_by_id(id_meccanico)
@@ -41,7 +44,7 @@ class MeccanicoService(ServiceBase):
             return {
                 "nome": meccanico.nome + " " + meccanico.cognome,
                 "data_inizio": meccanico.data_assunzione,
-                "data_fine": meccanico.data_fine_rapporto
+                "data_fine": meccanico.data_fine_rapporto,
             }
         except SQLAlchemyError as err:
             self.session.rollback()
