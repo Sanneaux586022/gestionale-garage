@@ -3,10 +3,10 @@ import logging
 from flask import Blueprint, jsonify, request
 from marshmallow import ValidationError
 
-from app.exceptions import NotFoundResultError
+from app.exceptions import InsufficientQuantityError, NotFoundResultError
 from app.services.ricambio_service import RicambioService
 from database import get_db_session
-from schemas import RicambioSchema
+from schemas import RicambioQuantitaSchema, RicambioSchema
 
 ricambio_blp = Blueprint("ricambio", __name__)
 logger = logging.getLogger(f"{__name__}.RicambioRoute")
@@ -41,6 +41,81 @@ def get_ricambio(id_ricambio: int) -> dict:
     try:
         ricambio = ricambio_service.cerca_ricambio_by_id(id_ricambio)
         return jsonify({"response_data": schema.dump(ricambio)}), 200
+    except NotFoundResultError as nfre:
+        logger.warning(f"Warning: {nfre.message}")
+        return jsonify({"errore": nfre.message}), nfre.status_code
+    except Exception as err:
+        logger.error(f"errore: {err}")
+        return jsonify({"errore": "Errore durante l'operazione."}), 500
+
+
+@ricambio_blp.route("/ricambio/<int:id_ricambio>", methods=["PUT"])
+def modify_ricambio(id_ricambio: int) -> dict:
+    schema = RicambioSchema()
+    db_session = get_db_session()
+    ricambio_service = RicambioService(db_session, logger)
+
+    try:
+        data = schema.load(request.get_json())
+    except ValidationError as val_err:
+        logger.error(f"errore nei dati dal client: {val_err}.")
+        return jsonify({"errore": "Dati inseriti non corretti."}), 400
+
+    try:
+        ricambio = ricambio_service.modifica_ricambio(id_ricambio, data)
+        return jsonify({"response_data": schema.dump(ricambio)}), 200
+    except NotFoundResultError as nfre:
+        logger.warning(f"Warning: {nfre.message}")
+        return jsonify({"errore": nfre.message}), nfre.status_code
+    except Exception as err:
+        logger.error(f"errore: {err}")
+        return jsonify({"errore": "Errore durante l'operazione."}), 500
+
+
+@ricambio_blp.route("/ricambio/<int:id_ricambio>/scarico", methods=["PUT"])
+def withdraw_ricambio(id_ricambio: int) -> dict:
+    schema = RicambioQuantitaSchema()
+    schema_ricambio = RicambioSchema()
+    db_session = get_db_session()
+    ricambio_service = RicambioService(db_session, logger)
+
+    try:
+        data = schema.load(request.get_json())
+    except ValidationError as val_err:
+        logger.error(f"errore nei dati dal client: {val_err}.")
+        return jsonify({"errore": "Dati inseriti non corretti."}), 400
+
+    try:
+        ricambio = ricambio_service.scarica_ricambio(id_ricambio, data["quantita"])
+        return jsonify({"response_data": schema_ricambio.dump(ricambio)}), 200
+    except InsufficientQuantityError as iqe:
+        logger.error(f"errore : {iqe.message}")
+        return jsonify({"errore": iqe.message}), iqe.status_code
+    except NotFoundResultError as nfre:
+        logger.warning(f"Warning: {nfre.message}")
+        return jsonify({"errore": nfre.message}), nfre.status_code
+    except Exception as err:
+        logger.error(f"errore: {err}")
+        return jsonify({"errore": "Errore durante l'operazione."}), 500
+
+
+@ricambio_blp.route("/ricambio/<int:id_ricambio>/carico", methods=["PUT"])
+def stock_ricambio(id_ricambio: int) -> dict:
+    schema = RicambioQuantitaSchema()
+    schema_ricambio = RicambioSchema()
+    db_session = get_db_session()
+    ricambio_service = RicambioService(db_session, logger)
+
+    try:
+        data = schema.load(request.get_json())
+    except ValidationError as val_err:
+        logger.error(f"errore nei dati dal client: {val_err}.")
+        return jsonify({"errore": "Dati inseriti non corretti."}), 400
+
+    try:
+        ricambio = ricambio_service.carica_ricambio(id_ricambio, data["quantita"])
+        return jsonify({"response_data": schema_ricambio.dump(ricambio)}), 200
+
     except NotFoundResultError as nfre:
         logger.warning(f"Warning: {nfre.message}")
         return jsonify({"errore": nfre.message}), nfre.status_code
