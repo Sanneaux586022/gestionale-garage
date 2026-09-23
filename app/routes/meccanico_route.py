@@ -84,6 +84,7 @@ def get_meccanico(id_meccanico: int) -> dict:
         logger.error(f"errore: {err}")
         return jsonify({"errore": "Errore durante l'operazione."}), 500
 
+
 @meccanico_blp.route("/meccanico/<int:id_meccanico>", methods=["PUT"])
 def modify_meccanico(id_meccanico: int) -> dict:
     db_session = get_db_session()
@@ -105,4 +106,4 @@ def modify_meccanico(id_meccanico: int) -> dict:
         return jsonify({"errore": nfre.message}), nfre.status_code
     except Exception as err:
         logger.error(f"errore: {err}")
-        return jsonify({"errore": "Errore durante l'operazione."}), 500        
+        return jsonify({"errore": "Errore durante l'operazione."}), 500

@@ -1,0 +1,49 @@
+import logging
+
+from flask import Blueprint, jsonify, request
+from marshmallow import ValidationError
+
+from app.exceptions import NotFoundResultError
+from app.services.ricambio_service import RicambioService
+from database import get_db_session
+from schemas import RicambioSchema
+
+ricambio_blp = Blueprint("ricambio", __name__)
+logger = logging.getLogger(f"{__name__}.RicambioRoute")
+
+
+@ricambio_blp.route("/ricambio", methods=["POST"])
+def add_ricambio():
+    schema = RicambioSchema()
+    db_session = get_db_session()
+    ricambio_service = RicambioService(db_session, logger)
+
+    try:
+        data = schema.load(request.get_json())
+    except ValidationError as val_err:
+        logger.error(f"errore nei dati dal client: {val_err}.")
+        return jsonify({"errore": "Dati inseriti non corretti."}), 400
+
+    try:
+        ricambio = ricambio_service.aggiungi_ricambio(data)
+        return jsonify({"response_data": schema.dump(ricambio)}), 201
+    except Exception as err:
+        logger.error(f"errore: {err}")
+        return jsonify({"errore": "errore durante l'operazione"}), 500
+
+
+@ricambio_blp.route("/ricambio/<int:id_ricambio>", methods=["GET"])
+def get_ricambio(id_ricambio: int) -> dict:
+    db_session = get_db_session()
+    schema = RicambioSchema()
+    ricambio_service = RicambioService(db_session, logger)
+
+    try:
+        ricambio = ricambio_service.cerca_ricambio_by_id(id_ricambio)
+        return jsonify({"response_data": schema.dump(ricambio)}), 200
+    except NotFoundResultError as nfre:
+        logger.warning(f"Warning: {nfre.message}")
+        return jsonify({"errore": nfre.message}), nfre.status_code
+    except Exception as err:
+        logger.error(f"errore: {err}")
+        return jsonify({"errore": "Errore durante l'operazione."}), 500

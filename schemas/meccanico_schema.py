@@ -20,9 +20,11 @@ class MeccanicoSchema(Schema):
     def normalizza_nominativi(self, data, **kwargs):
         nome = data["nome"]
         cognome = data["cognome"]
+        specializzazione = data.get("specializzazione", "")
 
         data["nome"] = nome.lower()
         data["cognome"] = cognome.lower()
+        data["specializzazione"] = specializzazione.lower() if specializzazione else ""
 
         return data
 

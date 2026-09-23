@@ -31,6 +31,7 @@ def get_auto(id_auto: int) -> dict:
         logger.error(f"errore: {err}")
         return jsonify({"errore": "Errore durante l'operazione."}), 500
 
+
 @auto_blp.route("/auto/targa/<string:targa_auto>", methods=["GET"])
 def get_auto_by_targa(targa_auto: str) -> dict:
 

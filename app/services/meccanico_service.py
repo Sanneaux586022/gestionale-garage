@@ -20,7 +20,7 @@ class MeccanicoService(ServiceBase):
             return nuovo_meccanico
         except SQLAlchemyError as err:
             self.session.rollback()
-            self.logger.error(f"Errore : {err}.")
+            self.logger.error(f"errore : {err}.")
             raise
 
     def cerca_meccanico_by_id(self, id_meccanico: int) -> Meccanico:
@@ -51,16 +51,15 @@ class MeccanicoService(ServiceBase):
             self.logger.error(f"errore: {err}.")
             raise
 
-    def modifica_meccanico(self, id_meccanico: int , data: dict) -> Meccanico:
+    def modifica_meccanico(self, id_meccanico: int, data: dict) -> Meccanico:
         try:
             meccanico = self.cerca_meccanico_by_id(id_meccanico)
 
             for chiave, valore in data.items():
-                if getattr(meccanico, chiave) != valore:
-                    setattr(meccanico, chiave, valore)
+                setattr(meccanico, chiave, valore)
             self.session.commit()
             return meccanico
         except SQLAlchemyError as err:
             self.session.rollback()
             self.logger.error(f"errore: {err}.")
-            raise            
+            raise
