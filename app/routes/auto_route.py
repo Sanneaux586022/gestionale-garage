@@ -98,3 +98,27 @@ def cambio_proprietario(id_auto: int, id_cliente: int):
     except Exception as err:
         logger.error(f"errore: {err}")
         return jsonify({"errore": "Errore durante l'operazione."}), 500
+
+@auto_blp.route("/cliente/<int:id_cliente>/auto", methods=["POST"])
+def aggiungi_auto_a_cliente(id_cliente):
+    db_session = get_db_session()
+    schema = AutoSchema()
+    auto_service = AutoService(db_session, logger)
+
+    try:
+        data = schema.load(request.get_json())
+    except ValidationError as val_err:
+        logger.error(f"errore nei dati dal client: {val_err}.")
+        return jsonify({"errore": "Dati inseriti non corretti."}), 400
+
+    try:
+        auto = auto_service.aggiungi_nuova_auto(id_cliente, data)
+
+        return jsonify({"response_data": schema.dump(auto)}), 201
+
+    except NotFoundResultError as nfre:
+        logger.warning(f"Warning: {nfre.message}")
+        return jsonify({"errore": nfre.message}), nfre.status_code
+    except Exception as err:
+        logger.error(f"errore: {err}.")
+        return jsonify({"errore": "Errore durante l'operazione."}), 500

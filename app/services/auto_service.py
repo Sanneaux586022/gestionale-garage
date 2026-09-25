@@ -14,6 +14,9 @@ class AutoService(ServiceBase):
     def aggiungi_nuova_auto(self, id_cliente: int, dati_auto: dict) -> Auto:
 
         try:
+            cliente_service = ClienteService(self.session, self.logger)
+            cliente = cliente_service.cerca_cliente_by_id(id_cliente)
+
             nuova_auto = Auto()
             for chiave, valore in dati_auto.items():
                 setattr(nuova_auto, chiave, valore)
@@ -23,7 +26,7 @@ class AutoService(ServiceBase):
 
             storico_proprieta = StoricoProprietaAuto()
             storico_proprieta.id_auto = nuova_auto.id
-            storico_proprieta.id_cliente = id_cliente
+            storico_proprieta.id_cliente = cliente.id
 
             self.session.add(storico_proprieta)
             self.session.commit()
