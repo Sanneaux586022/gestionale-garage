@@ -4,8 +4,16 @@ class NotFoundResultError(Exception):
         self.message = args[0]
         self.status_code = 404
 
+
 class InsufficientQuantityError(Exception):
     def __init__(self, *args):
         super().__init__(*args)
         self.message = args[0]
-        self.status_code = 409        
+        self.status_code = 409
+
+
+class ForbiddenOperationError(Exception):
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.message = args[0]
+        self.status_code = 409

@@ -5,5 +5,5 @@ from schemas.meccanico_schema import (
     MeccanicoSchema,
     MeccanicoSchemaResponse,
 )
-from schemas.ricambio_schema import RicambioSchema, RicambioQuantitaSchema
-from schemas.preventivo_schema import PreventivoSchema
+from schemas.preventivo_schema import PreventivoSchema, PreventivoStatoSchema
+from schemas.ricambio_schema import RicambioQuantitaSchema, RicambioSchema

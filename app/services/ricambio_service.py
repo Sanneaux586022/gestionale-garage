@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.service_base import ServiceBase
-from app.exceptions import NotFoundResultError, InsufficientQuantityError
+from app.exceptions import InsufficientQuantityError, NotFoundResultError
 from models import Ricambio
 
 
@@ -35,7 +35,7 @@ class RicambioService(ServiceBase):
             )
         return result
 
-    def modifica_ricambio(self, id_ricambio, data: dict)-> Ricambio:
+    def modifica_ricambio(self, id_ricambio, data: dict) -> Ricambio:
 
         ricambio = self.cerca_ricambio_by_id(id_ricambio)
         try:
@@ -47,7 +47,6 @@ class RicambioService(ServiceBase):
             self.session.rollback()
             self.logger.error(f"errore: {err}")
             raise
-
 
     def scarica_ricambio(self, id_ricambio: int, quantita: int) -> Ricambio:
         try:
@@ -65,7 +64,6 @@ class RicambioService(ServiceBase):
             self.logger.error(f"errore: {err}")
             raise
 
-    
     def carica_ricambio(self, id_ricambio: int, quantita: int) -> Ricambio:
         try:
             ricambio = self.cerca_ricambio_by_id(id_ricambio)
@@ -77,4 +75,3 @@ class RicambioService(ServiceBase):
             self.session.rollback()
             self.logger.error(f"errore: {err}")
             raise
-        

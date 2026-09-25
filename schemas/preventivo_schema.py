@@ -6,3 +6,7 @@ class PreventivoSchema(Schema):
     descrizione_lavoro = fields.Str(required=True)
     importo_stimato = fields.Decimal(required=True)
     data_preventivo = fields.Date(dump_only=True)
+
+
+class PreventivoStatoSchema(PreventivoSchema):
+    stato_preventivo = fields.Str(dump_only=True)
