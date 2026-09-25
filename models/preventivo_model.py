@@ -1,7 +1,7 @@
 from datetime import date
 from decimal import Decimal
 
-from sqlalchemy import CheckConstraint, ForeignKey, Identity, Numeric
+from sqlalchemy import CheckConstraint, ForeignKey, Identity, Numeric, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from database import Base
@@ -17,7 +17,9 @@ class Preventivo(Base):
     descrizione_lavoro: Mapped[str] = mapped_column(nullable=False)
     importo_stimato: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     stato_preventivo: Mapped[str] = mapped_column(nullable=False)
-    data_preventivo: Mapped[date] = mapped_column(nullable=False)
+    data_preventivo: Mapped[date] = mapped_column(
+        nullable=False, server_default=text("CURRENT_DATE")
+    )
 
     __table_args__ = (
         CheckConstraint(

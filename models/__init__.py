@@ -4,6 +4,6 @@ from models.fattura import Fattura
 from models.intervento import Intervento
 from models.intervento_ricambio import InterventoRicambio
 from models.meccanico_model import Meccanico
-from models.preventivo import Preventivo
+from models.preventivo_model import Preventivo
 from models.ricambio_model import Ricambio
 from models.storico_proprieta_auto_model import StoricoProprietaAuto
