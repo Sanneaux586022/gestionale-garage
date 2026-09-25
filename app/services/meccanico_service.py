@@ -41,11 +41,7 @@ class MeccanicoService(ServiceBase):
             meccanico = self.cerca_meccanico_by_id(id_meccanico)
             meccanico.data_fine_rapporto = data["data_fine_rapporto"]
             self.session.commit()
-            return {
-                "nome": meccanico.nome + " " + meccanico.cognome,
-                "data_inizio": meccanico.data_assunzione,
-                "data_fine": meccanico.data_fine_rapporto,
-            }
+            return meccanico
         except SQLAlchemyError as err:
             self.session.rollback()
             self.logger.error(f"errore: {err}.")

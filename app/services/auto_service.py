@@ -102,7 +102,6 @@ class AutoService(ServiceBase):
 
         nuovo_proprietario = cliente_service.cerca_cliente_by_id(id_cliente_new)
 
-
         try:
             dati_proprieta.data_fine = date.today()
             self.session.flush()
@@ -116,7 +115,7 @@ class AutoService(ServiceBase):
                 "nome_cliente": nuovo_proprietario.nome,
                 "id_cliente": new_dati_prorpieta.id_cliente,
                 "targa": auto.targa,
-                "precedente_proprietario": precedente_prorietario.nome
+                "precedente_proprietario": precedente_prorietario.nome,
             }
         except SQLAlchemyError as err:
             self.session.rollback()

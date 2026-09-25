@@ -1,8 +1,9 @@
 import logging
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request
 from marshmallow import ValidationError
 
+from app.core.responses import *
 from app.exceptions import NotFoundResultError
 from app.services.preventivo_service import PreventivoService
 from database import get_db_session
@@ -24,14 +25,14 @@ def add_preventivo(id_cliente: int, id_auto: int) -> dict:
         data = schema.load(request.get_json())
     except ValidationError as val_err:
         logger.error(f"errore: {val_err}")
-        return jsonify({"errore": "Dati inseriti non corretti."}), 400
+        return validation_error_response()
 
     try:
         preventivo = preventivo_service.crea_preventivo(id_cliente, id_auto, data)
-        return jsonify({"response_data": schema.dump(preventivo)}), 201
+        return ok_response(schema.dump(preventivo), 201)
     except NotFoundResultError as nfre:
         logger.warning(f"Warning : {nfre.message}")
-        return jsonify({"errore": nfre.message}), nfre.status_code
+        return error_response(nfre.message, nfre.status_code)
     except Exception as err:
         logger.error(f"errore: {err}")
-        return jsonify({"errore": "Errore durante l'operazione di creazione."}), 500
+        return generic_error_response()
