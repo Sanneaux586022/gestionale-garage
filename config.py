@@ -1,4 +1,5 @@
 import os
+from decimal import Decimal
 
 from dotenv import load_dotenv
 
@@ -10,3 +11,5 @@ POSTGRES_DB = os.environ["POSTGRES_DB"]
 POSTGRES_HOST = os.environ["POSTGRES_HOST"]
 POSTGRES_PORT = os.environ["POSTGRES_PORT"]
 POSTGRES_CONNECTION = f"postgresql+psycopg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+TARIFFA_ORARIA_STANDARD = Decimal(os.environ["TARIFFA_ORARIA_STANDARD"])
+TARIFFA_ORARIA_URGENZA = Decimal(os.environ["TARIFFA_ORARIA_URGENZA"])
