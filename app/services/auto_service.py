@@ -42,22 +42,22 @@ class AutoService(ServiceBase):
 
         query = select(Auto).where(Auto.id == id_auto)
 
-        result = self.session.scalar(query)
+        auto = self.session.scalar(query)
 
-        if not result:
+        if not auto:
             raise NotFoundResultError(f"Nessuna auto trovata con l'id {id_auto}.")
 
-        return result
+        return auto
 
     def cerca_auto_by_targa(self, targa: str) -> Auto:
 
         query = select(Auto).where(Auto.targa == targa)
-        result = self.session.scalar(query)
+        auto = self.session.scalar(query)
 
-        if not result:
+        if not auto:
             raise NotFoundResultError(f"Nessuna auto trovata con la targa: {targa}")
 
-        return result
+        return auto
 
     def modifica_dati_auto(self, id_auto: int, dati_auto: dict) -> Auto:
 

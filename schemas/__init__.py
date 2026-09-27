@@ -7,3 +7,4 @@ from schemas.meccanico_schema import (
 )
 from schemas.preventivo_schema import PreventivoSchema, PreventivoStatoSchema
 from schemas.ricambio_schema import RicambioQuantitaSchema, RicambioSchema
+from schemas.intervento_schema import InterventoResponseSchema, InterventoNormaleResponseSchema

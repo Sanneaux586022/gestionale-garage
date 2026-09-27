@@ -28,12 +28,12 @@ class RicambioService(ServiceBase):
 
         query = select(Ricambio).where(Ricambio.id == id_ricambio)
 
-        result = self.session.scalar(query)
-        if not result:
+        ricambio = self.session.scalar(query)
+        if not ricambio:
             raise NotFoundResultError(
                 f"Nessun Ricambio trovato con l'id: {id_ricambio}."
             )
-        return result
+        return ricambio
 
     def modifica_ricambio(self, id_ricambio, data: dict) -> Ricambio:
 

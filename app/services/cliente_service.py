@@ -27,12 +27,12 @@ class ClienteService(ServiceBase):
     def cerca_cliente_by_id(self, id_cliente: int) -> Cliente:
 
         query = select(Cliente).where(Cliente.id == id_cliente)
-        result = self.session.scalar(query)
+        cliente = self.session.scalar(query)
 
-        if not result:
+        if not cliente:
             raise NotFoundResultError(f"Nessun utente trovato con l'id: {id_cliente}.")
 
-        return result
+        return cliente
 
     def modifica_cliente(self, id_cliente: int, dati_cliente: dict) -> Cliente:
 

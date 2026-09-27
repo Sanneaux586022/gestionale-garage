@@ -26,14 +26,14 @@ class MeccanicoService(ServiceBase):
     def cerca_meccanico_by_id(self, id_meccanico: int) -> Meccanico:
         query = select(Meccanico).where(Meccanico.id == id_meccanico)
 
-        result = self.session.scalar(query)
+        meccanico = self.session.scalar(query)
 
-        if not result:
+        if not meccanico:
             raise NotFoundResultError(
                 f"Nessun Meccanico trovato con l'id: {id_meccanico}."
             )
 
-        return result
+        return meccanico
 
     def termina_rapporto(self, id_meccanico: int, data: dict) -> dict:
 

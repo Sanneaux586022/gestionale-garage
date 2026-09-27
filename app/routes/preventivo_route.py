@@ -3,7 +3,12 @@ import logging
 from flask import Blueprint, request
 from marshmallow import ValidationError
 
-from app.core.responses import *
+from app.core.responses import (
+    error_response,
+    generic_error_response,
+    ok_response,
+    validation_error_response,
+)
 from app.core.utils import ACCETTATO, RIFIUTATO
 from app.exceptions import ForbiddenOperationError, NotFoundResultError
 from app.services.preventivo_service import PreventivoService
@@ -43,7 +48,7 @@ def add_preventivo(id_cliente: int, id_auto: int) -> dict:
 def get_preventivo(id_preventivo: int) -> dict:
     db_session = get_db_session()
     preventivo_service = PreventivoService(db_session, logger)
-    schema = PreventivoSchema()
+    schema = PreventivoStatoSchema()
     try:
         preventivo = preventivo_service.cerca_preventivo_by_id(id_preventivo)
         return ok_response(schema.dump(preventivo))
