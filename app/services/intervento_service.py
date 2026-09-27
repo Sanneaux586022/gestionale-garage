@@ -1,8 +1,11 @@
+from datetime import date
+from decimal import Decimal
+
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.service_base import ServiceBase
-from app.core.utils import ACCETTATO, IN_CORSO
+from app.core.utils import ACCETTATO, COMPLETATO, IN_CORSO
 from app.exceptions import ForbiddenOperationError, NotFoundResultError
 from app.services.auto_service import AutoService
 from app.services.meccanico_service import MeccanicoService
@@ -85,3 +88,24 @@ class InterventoService(ServiceBase):
             )
 
         return intervento
+
+    def completa_intervento(
+        self, id_intervento: int, ore_lavorate: Decimal
+    ) -> Intervento:
+        try:
+            intervento = self.cerca_intervento_by_id(id_intervento)
+
+            if intervento.stato_intervento != IN_CORSO:
+                raise ForbiddenOperationError(
+                    f"L'intervento deve essere in stato {IN_CORSO} per poterlo chiudere."
+                )
+
+            intervento.data_fine_intervento = date.today()
+            intervento.ore_lavorate = ore_lavorate
+            intervento.stato_intervento = COMPLETATO
+            self.session.commit()
+            return intervento
+        except SQLAlchemyError as err:
+            self.logger.error(f"errore: {err}")
+            self.session.rollback()
+            raise
