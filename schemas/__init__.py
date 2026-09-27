@@ -1,5 +1,9 @@
 from schemas.auto_schema import AutoSchema
 from schemas.cliente_schema import ClienteSchema
+from schemas.intervento_ricambio_schema import (
+    InterventoRicambioResponseSchema,
+    InterventoRicambioSchema,
+)
 from schemas.intervento_schema import (
     InterventoCompletatoSchema,
     InterventoNormaleResponseSchema,

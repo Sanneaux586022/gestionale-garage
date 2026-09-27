@@ -2,7 +2,7 @@ from models.auto_model import Auto
 from models.cliente_model import Cliente
 from models.fattura import Fattura
 from models.intervento_model import Intervento
-from models.intervento_ricambio import InterventoRicambio
+from models.intervento_ricambio_model import InterventoRicambio
 from models.meccanico_model import Meccanico
 from models.preventivo_model import Preventivo
 from models.ricambio_model import Ricambio
