@@ -121,3 +121,20 @@ class AutoService(ServiceBase):
             self.session.rollback()
             self.logger.error(f"errore: {err}")
             raise
+
+    def verifica_proprieta_attiva(self, id_cliente: int, id_auto: int) -> None:
+
+        query = select(StoricoProprietaAuto).where(
+            and_(
+                StoricoProprietaAuto.id_cliente == id_cliente,
+                StoricoProprietaAuto.id_auto == id_auto,
+                StoricoProprietaAuto.data_fine.is_(None),
+            )
+        )
+        storico = self.session.scalar(query)
+
+        if not storico:
+            raise NotFoundResultError(
+                f"Non risulta nessuna auto con id : {id_auto},"
+                f" di cui il cliente {id_cliente} è proprietario."
+            )

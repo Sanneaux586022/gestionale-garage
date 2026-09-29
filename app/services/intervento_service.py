@@ -109,3 +109,12 @@ class InterventoService(ServiceBase):
             self.logger.error(f"errore: {err}")
             self.session.rollback()
             raise
+
+    def cerca_intervento_by_id_fattura(self, id_fattura: int)-> list[Intervento]:
+
+        query = select(Intervento).where(Intervento.id_fattura == id_fattura)
+
+        interventi = self.session.scalars(query)
+
+        return list(interventi)
+

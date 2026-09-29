@@ -4,6 +4,7 @@ from flask import Flask
 
 from app.routes.auto_route import auto_blp
 from app.routes.cliente_route import cliente_bp
+from app.routes.fattura_route import fattura_blp
 from app.routes.intervento_ricambio_route import intervento_ricambio_blp
 from app.routes.intervento_route import intervento_blp
 from app.routes.meccanico_route import meccanico_blp
@@ -27,5 +28,6 @@ def create_app():
     app.register_blueprint(preventivo_blp)
     app.register_blueprint(intervento_blp)
     app.register_blueprint(intervento_ricambio_blp)
+    app.register_blueprint(fattura_blp)
 
     return app

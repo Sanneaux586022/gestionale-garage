@@ -1,35 +1,19 @@
-from sqlalchemy import and_, select
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.service_base import ServiceBase
 from app.core.utils import IN_ATTESA
 from app.exceptions import ForbiddenOperationError, NotFoundResultError
-from models import Preventivo, StoricoProprietaAuto
+from app.services.auto_service import AutoService
+from models import Preventivo
 
 
 class PreventivoService(ServiceBase):
 
-    def verifica_proprieta_attiva(self, id_cliente: int, id_auto: int) -> None:
-
-        query = select(StoricoProprietaAuto).where(
-            and_(
-                StoricoProprietaAuto.id_cliente == id_cliente,
-                StoricoProprietaAuto.id_auto == id_auto,
-                StoricoProprietaAuto.data_fine.is_(None),
-            )
-        )
-        storico = self.session.scalar(query)
-
-        if not storico:
-            raise NotFoundResultError(
-                f"Non risulta nessuna auto con id : {id_auto},"
-                f" di cui il cliente {id_cliente} è proprietario."
-            )
-
     def crea_preventivo(self, id_cliente: int, id_auto: int, data: dict) -> Preventivo:
-
+        auto_service = AutoService(self.session, self.logger)
         try:
-            self.verifica_proprieta_attiva(id_cliente, id_auto)
+            auto_service.verifica_proprieta_attiva(id_cliente, id_auto)
             preventivo = Preventivo()
 
             for chiave, valore in data.items():

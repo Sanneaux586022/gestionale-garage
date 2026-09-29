@@ -23,7 +23,7 @@ logger = logging.getLogger(f"{__name__}.InterventoRicambio")
 
 
 @intervento_ricambio_blp.route(
-    "/intervento/<int:id_intervento>/ricambio/<int:id_ricambio>",
+    "/intervento_ricambio/<int:id_intervento>/ricambio/<int:id_ricambio>",
     methods=["POST"],
 )
 def create_intervento_ricambio(id_intervento: int, id_ricambio: int) -> dict:

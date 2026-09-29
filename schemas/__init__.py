@@ -1,5 +1,10 @@
 from schemas.auto_schema import AutoSchema
 from schemas.cliente_schema import ClienteSchema
+from schemas.fattura_schema import (
+    FatturaChiudiSchema,
+    FatturaConImportoSchema,
+    FatturaResponseSchema,
+)
 from schemas.intervento_ricambio_schema import (
     InterventoRicambioResponseSchema,
     InterventoRicambioSchema,

@@ -59,3 +59,10 @@ class InterventoRicambioService(ServiceBase):
             )
 
         return intervento_ricambio
+
+    def cerca_ricambi_by_intervento(self, id_intervento: int) -> list[InterventoRicambio]:
+
+        query = select(InterventoRicambio).where(InterventoRicambio.id_intervento == id_intervento)
+
+        interventi = self.session.scalars(query)
+        return list(interventi)
