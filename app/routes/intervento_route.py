@@ -24,7 +24,7 @@ intervento_blp = Blueprint("Intervento", __name__)
 
 
 @intervento_blp.route(
-    "/auto/<int:id_auto>/meccanico/<int:id_meccanico>/intervento", methods=["POST"]
+    "/cliente/<int:id_cliente>/auto/<int:id_auto>/meccanico/<int:id_meccanico>/intervento", methods=["POST"]
 )
 def create_intervento_urgente(id_auto: int, id_meccanico: int) -> dict:
     db_session = get_db_session()

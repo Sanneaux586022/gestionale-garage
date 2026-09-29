@@ -4,6 +4,7 @@ from marshmallow import Schema, ValidationError, fields, validates
 class InterventoResponseSchema(Schema):
     id = fields.Int()
     id_auto = fields.Int()
+    id_cliente = fields.Int()
     id_meccanico = fields.Int()
     stato_intervento = fields.Str()
     tariffa_oraria_applicata = fields.Decimal()
@@ -17,6 +18,7 @@ class InterventoSchema(Schema):
     id = fields.Int(dump_only=True)
     id_auto = fields.Int(dump_only=True)
     id_meccanico = fields.Int(dump_only=True)
+    id_cliente = fields.Int(dump_only=True)
     id_preventivo = fields.Int(dump_only=True)
     id_fattura = fields.Int(dump_only=True)
     stato_intervento = fields.Str(dump_only=True)

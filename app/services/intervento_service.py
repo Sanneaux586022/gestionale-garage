@@ -38,6 +38,7 @@ class InterventoService(ServiceBase):
             intervento = Intervento(
                 id_auto=preventivo.id_auto,
                 id_meccanico=meccanico.id,
+                id_cliente=preventivo.id_cliente,
                 id_preventivo=preventivo.id,
                 stato_intervento=IN_CORSO,
                 tariffa_oraria_applicata=TARIFFA_ORARIA_STANDARD,
@@ -50,15 +51,19 @@ class InterventoService(ServiceBase):
             self.logger.error(f"errore: {err}")
             raise
 
-    def crea_intervento_urgente(self, id_auto: int, id_meccanico: int) -> Intervento:
+    def crea_intervento_urgente(
+        self, id_auto: int, id_meccanico: int, id_cliente: int
+    ) -> Intervento:
         meccanico_service = MeccanicoService(self.session, self.logger)
         auto_service = AutoService(self.session, self.logger)
         try:
             meccanico = meccanico_service.cerca_meccanico_by_id(id_meccanico)
             auto = auto_service.cerca_auto_by_id(id_auto)
+            auto_service.verifica_proprieta_attiva(id_cliente)
             intervento = Intervento(
                 id_auto=auto.id,
                 id_meccanico=meccanico.id,
+                id_cliente=id_cliente,
                 stato_intervento=IN_CORSO,
                 tariffa_oraria_applicata=TARIFFA_ORARIA_URGENZA,
             )
@@ -110,11 +115,10 @@ class InterventoService(ServiceBase):
             self.session.rollback()
             raise
 
-    def cerca_intervento_by_id_fattura(self, id_fattura: int)-> list[Intervento]:
+    def cerca_intervento_by_id_fattura(self, id_fattura: int) -> list[Intervento]:
 
         query = select(Intervento).where(Intervento.id_fattura == id_fattura)
 
         interventi = self.session.scalars(query)
 
         return list(interventi)
-

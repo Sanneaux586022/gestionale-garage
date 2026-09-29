@@ -23,13 +23,13 @@ logger = logging.getLogger(f"{__name__}.FatturaRoute")
 fattura_blp = Blueprint("Fattura", __name__)
 
 
-@fattura_blp.route("/fattura", methods=["POST"])
-def create_fattura() -> dict:
+@fattura_blp.route("/cliente/<int:id_cliente>/fattura", methods=["POST"])
+def create_fattura(id_cliente: int) -> dict:
     db_session = get_db_session()
     schema = FatturaResponseSchema()
     fattura_service = FatturaService(db_session, logger)
     try:
-        fattura = fattura_service.crea_fattura()
+        fattura = fattura_service.crea_fattura(id_cliente)
         return ok_response(schema.dump(fattura), 201)
     except Exception as err:
         logger.error(f"errore: {err}")

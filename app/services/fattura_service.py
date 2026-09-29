@@ -7,6 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.core.service_base import ServiceBase
 from app.core.utils import COMPLETATO
 from app.exceptions import ForbiddenOperationError, NotFoundResultError
+from app.services.cliente_service import ClienteService
 from app.services.intervento_ricambio_service import InterventoRicambioService
 from app.services.intervento_service import InterventoService
 from config import GIORNI_SCADENZA_FATTURA
@@ -14,10 +15,13 @@ from models import Fattura, Intervento
 
 
 class FatturaService(ServiceBase):
-    def crea_fattura(self) -> Fattura:
+    def crea_fattura(self, id_cliente: int) -> Fattura:
+        cliente_service = ClienteService(self.session, self.logger)
         try:
+            cliente = cliente_service.cerca_cliente_by_id(id_cliente)
             fattura = Fattura(
-                data_scadenza=date.today() + timedelta(days=GIORNI_SCADENZA_FATTURA)
+                id_cliente=cliente.id,
+                data_scadenza=date.today() + timedelta(days=GIORNI_SCADENZA_FATTURA),
             )
             self.session.add(fattura)
             self.session.commit()
@@ -69,6 +73,10 @@ class FatturaService(ServiceBase):
             if intervento.id_fattura:
                 raise ForbiddenOperationError(
                     f"Impossibile aggiungere un intervento presente in un'altra fattura {intervento.id_fattura}."
+                )
+            if fattura.id_cliente != intervento.id_cliente:
+                raise ForbiddenOperationError(
+                    f"Impossibile agganciare intervento lìintervento: {intervento.id}. I clineti non corrispondono."
                 )
             intervento.id_fattura = fattura.id
             self.session.commit()
