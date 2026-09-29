@@ -16,14 +16,19 @@ class Intervento(Base):
     id_meccanico: Mapped[int] = mapped_column(
         ForeignKey("meccanico.id"), nullable=False
     )
-    id_preventivo: Mapped[int | None] = mapped_column(ForeignKey("preventivo.id"), unique=True)
+    id_cliente: Mapped[int] = mapped_column(ForeignKey("cliente.id"), nullable=False)
+    id_preventivo: Mapped[int | None] = mapped_column(
+        ForeignKey("preventivo.id"), unique=True
+    )
     id_fattura: Mapped[int | None] = mapped_column(ForeignKey("fattura.id"))
     stato_intervento: Mapped[str] = mapped_column(nullable=False)
     ore_lavorate: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
     tariffa_oraria_applicata: Mapped[Decimal] = mapped_column(
         Numeric(10, 2), nullable=False
     )
-    data_inizio_intervento: Mapped[date] = mapped_column(server_default=text("CURRENT_DATE"))
+    data_inizio_intervento: Mapped[date] = mapped_column(
+        server_default=text("CURRENT_DATE")
+    )
     data_fine_intervento: Mapped[date | None] = mapped_column()
 
     __table_args__ = (
