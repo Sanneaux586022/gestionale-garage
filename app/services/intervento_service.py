@@ -59,7 +59,7 @@ class InterventoService(ServiceBase):
         try:
             meccanico = meccanico_service.cerca_meccanico_by_id(id_meccanico)
             auto = auto_service.cerca_auto_by_id(id_auto)
-            auto_service.verifica_proprieta_attiva(id_cliente)
+            auto_service.verifica_proprieta_attiva(id_cliente=id_cliente, id_auto=id_auto)
             intervento = Intervento(
                 id_auto=auto.id,
                 id_meccanico=meccanico.id,

@@ -12,9 +12,9 @@ class AutoSchema(Schema):
     @pre_load
     def normalizza_targa(self, data, **kwargs):
 
-        targa_upper = data.get("targa")
-        if not targa_upper:
+        targa = data.get("targa")
+        if not targa:
             raise ValidationError("Nessuna targa inviata.")
 
-        data["targa"] = targa_upper.upper()
+        data["targa"] = targa.upper()
         return data

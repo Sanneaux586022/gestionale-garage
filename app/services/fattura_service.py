@@ -61,23 +61,25 @@ class FatturaService(ServiceBase):
         intervento_service = InterventoService(self.session, self.logger)
         try:
             fattura = self.cerca_fattura_by_id(id_fattura)
+            intervento = intervento_service.cerca_intervento_by_id(id_intervento)
+
+            if fattura.id_cliente != intervento.id_cliente:
+                raise ForbiddenOperationError(
+                    f"Impossibile agganciare l'intervento: {intervento.id}. I clienti non corrispondono."
+                )
             if fattura.data_pagamento:
                 raise ForbiddenOperationError(
                     f"Impossibile aggiungere intervento: fattura già pagata in data {fattura.data_pagamento}."
                 )
-            intervento = intervento_service.cerca_intervento_by_id(id_intervento)
             if intervento.stato_intervento != COMPLETATO:
                 raise ForbiddenOperationError(
                     f"Impossibile aggiungere un intervento in stato {intervento.stato_intervento}."
                 )
             if intervento.id_fattura:
                 raise ForbiddenOperationError(
-                    f"Impossibile aggiungere un intervento presente in un'altra fattura {intervento.id_fattura}."
+                    f"L'intervento è già agganciato alla fattura {intervento.id_fattura}."
                 )
-            if fattura.id_cliente != intervento.id_cliente:
-                raise ForbiddenOperationError(
-                    f"Impossibile agganciare intervento lìintervento: {intervento.id}. I clineti non corrispondono."
-                )
+
             intervento.id_fattura = fattura.id
             self.session.commit()
             return intervento

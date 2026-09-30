@@ -47,7 +47,7 @@ class PreventivoService(ServiceBase):
 
         if preventivo.stato_preventivo != IN_ATTESA:
             raise ForbiddenOperationError(
-                "Il preventivo deve essere nello stato 'in attesa'."
+                f"Il preventivo deve essere nello stato '{IN_ATTESA}'."
             )
 
         try:

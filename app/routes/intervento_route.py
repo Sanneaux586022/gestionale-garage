@@ -24,14 +24,17 @@ intervento_blp = Blueprint("Intervento", __name__)
 
 
 @intervento_blp.route(
-    "/cliente/<int:id_cliente>/auto/<int:id_auto>/meccanico/<int:id_meccanico>/intervento", methods=["POST"]
+    "/cliente/<int:id_cliente>/auto/<int:id_auto>/meccanico/<int:id_meccanico>/intervento",
+    methods=["POST"],
 )
-def create_intervento_urgente(id_auto: int, id_meccanico: int) -> dict:
+def create_intervento_urgente(id_auto: int, id_meccanico: int, id_cliente: int) -> dict:
     db_session = get_db_session()
     intervento_service = InterventoService(db_session, logger)
     schema = InterventoResponseSchema()
     try:
-        intervento = intervento_service.crea_intervento_urgente(id_auto, id_meccanico)
+        intervento = intervento_service.crea_intervento_urgente(
+            id_auto, id_meccanico, id_cliente
+        )
         return ok_response(schema.dump(intervento), 201)
     except ForbiddenOperationError as foe:
         logger.error(f"errore: {foe.message}")
@@ -54,7 +57,7 @@ def create_intervento(id_preventivo: int, id_meccanico: int) -> dict:
     schema = InterventoNormaleResponseSchema()
     try:
         intervento = intervento_service.crea_intervento_da_preventivo(
-            id_preventivo, id_meccanico
+            id_preventivo=id_preventivo, id_meccanico=id_meccanico
         )
         return ok_response(schema.dump(intervento), 201)
     except ForbiddenOperationError as foe:
@@ -100,7 +103,7 @@ def complete_intervento(id_intervento: int) -> dict:
 
     try:
         intervento = intervento_service.completa_intervento(
-            id_intervento, data["ore_lavorate"]
+            id_intervento=id_intervento, ore_lavorate=data["ore_lavorate"]
         )
         return ok_response(schema_output.dump(intervento))
     except ForbiddenOperationError as foe:

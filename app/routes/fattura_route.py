@@ -31,6 +31,9 @@ def create_fattura(id_cliente: int) -> dict:
     try:
         fattura = fattura_service.crea_fattura(id_cliente)
         return ok_response(schema.dump(fattura), 201)
+    except NotFoundResultError as nfre:
+        logger.warning(f"warning: {nfre.message}")
+        return error_response(nfre.message, nfre.status_code)
     except Exception as err:
         logger.error(f"errore: {err}")
         return generic_error_response()

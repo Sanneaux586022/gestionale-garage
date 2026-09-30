@@ -9,7 +9,7 @@ from app.core.responses import (
     ok_response,
     validation_error_response,
 )
-from app.exceptions import NotFoundResultError
+from app.exceptions import ForbiddenOperationError, NotFoundResultError
 from app.services.auto_service import AutoService
 from database import get_db_session
 from schemas.auto_schema import AutoSchema
@@ -91,6 +91,9 @@ def cambio_proprietario(id_auto: int, id_cliente: int):
         nuovo_proprietario = auto_service.cambio_proprieta(id_auto, id_cliente)
         return ok_response(nuovo_proprietario)
 
+    except ForbiddenOperationError as foe:
+        logger.error(f"errore: {foe.message}")
+        return error_response(foe.message, foe.status_code)
     except NotFoundResultError as nfre:
         logger.warning(f"Warning : {nfre.message}")
         return error_response(nfre.message, nfre.status_code)

@@ -4,7 +4,7 @@ from sqlalchemy import and_, select
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.service_base import ServiceBase
-from app.exceptions import NotFoundResultError
+from app.exceptions import ForbiddenOperationError, NotFoundResultError
 from app.services.cliente_service import ClienteService
 from models import Auto, StoricoProprietaAuto
 
@@ -76,9 +76,6 @@ class AutoService(ServiceBase):
             self.logger.error(f"errore: {err}")
             raise
 
-    def get_info_auto_by_id(self, id_auto: int) -> dict:
-        pass
-
     def cambio_proprieta(self, id_auto: int, id_cliente_new: int) -> dict:
         cliente_service = ClienteService(self.session, self.logger)
 
@@ -96,26 +93,30 @@ class AutoService(ServiceBase):
                 f"Nessun dato di proprieta attivo per questa auto : {auto.targa}."
             )
 
-        precedente_prorietario = cliente_service.cerca_cliente_by_id(
+        precedente_proprietario = cliente_service.cerca_cliente_by_id(
             dati_proprieta.id_cliente
         )
 
         nuovo_proprietario = cliente_service.cerca_cliente_by_id(id_cliente_new)
+        if precedente_proprietario.id == nuovo_proprietario.id:
+            raise ForbiddenOperationError(
+                "Impossibile trasferire proprieta allo stesso proprietario."
+            )
 
         try:
             dati_proprieta.data_fine = date.today()
             self.session.flush()
-            new_dati_prorpieta = StoricoProprietaAuto(
+            new_dati_proprieta = StoricoProprietaAuto(
                 id_cliente=id_cliente_new,
                 id_auto=id_auto,
             )
-            self.session.add(new_dati_prorpieta)
+            self.session.add(new_dati_proprieta)
             self.session.commit()
             return {
                 "nome_cliente": nuovo_proprietario.nome,
-                "id_cliente": new_dati_prorpieta.id_cliente,
+                "id_cliente": new_dati_proprieta.id_cliente,
                 "targa": auto.targa,
-                "precedente_proprietario": precedente_prorietario.nome,
+                "precedente_proprietario": precedente_proprietario.nome,
             }
         except SQLAlchemyError as err:
             self.session.rollback()

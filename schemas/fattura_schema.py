@@ -3,6 +3,7 @@ from marshmallow import Schema, fields
 
 class FatturaResponseSchema(Schema):
     id = fields.Int()
+    id_cliente = fields.Int()
     data_emissione = fields.Date()
     data_scadenza = fields.Date()
     data_pagamento = fields.Date()
